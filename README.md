@@ -1,2 +1,3 @@
-# md_visibility_attribute
-A Concrete CMS Package: Macareux Visibility Control Attribute
+# A Concrete CMS Package: Macareux Visibility Control Attribute
+
+Add an attribute type to control visibility of pages.
