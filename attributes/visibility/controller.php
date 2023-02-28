@@ -38,7 +38,6 @@ class Controller extends \Concrete\Core\Attribute\Controller
                 $pk->setPermissionObject($c);
                 $pa = $pk->getPermissionAccessObject();
                 if ($pa) {
-                    $group = Group::getByID(GUEST_GROUP_ID);
                     $groupList = new GroupList();
                     $groupList->includeAllGroups();
                     foreach ($groupList->getResults() as $group) {
@@ -56,12 +55,14 @@ class Controller extends \Concrete\Core\Attribute\Controller
             $settings = $this->getAttributeKeySettings();
             $optionGroups = [];
             foreach ($settings->getOptionGroups() as $gID) {
-                $optionGroup = Group::getByID($gID);
-                if ($optionGroup) {
-                    $optionGroups[] = [
-                        'id' => $gID,
-                        'label' => $optionGroup->getGroupDisplayName()
-                    ];
+                if ($gID !== ADMIN_GROUP_ID) {
+                    $optionGroup = Group::getByID($gID);
+                    if ($optionGroup) {
+                        $optionGroups[] = [
+                            'id' => $gID,
+                            'label' => $optionGroup->getGroupDisplayName(false, false)
+                        ];
+                    }
                 }
             }
             $this->set('optionGroups', $optionGroups);
@@ -103,6 +104,11 @@ class Controller extends \Concrete\Core\Attribute\Controller
     {
         $data = $this->post();
         return $this->createAttributeValue(explode(',', $data['visibleGroups']));
+    }
+
+    public function validateValue()
+    {
+        return $this->attributeValue->getValue() !== '';
     }
 
     public function type_form()

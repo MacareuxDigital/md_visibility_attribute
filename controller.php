@@ -13,6 +13,7 @@ use Concrete\Core\Permission\Key\PageKey as PagePermissionKey;
 use Concrete\Core\User\Group\Group;
 use Macareux\VisibilityAttribute\Entity\VisibilityAttributeValue;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Concrete\Core\Permission\Access\Access as PermissionAccess;
 
 class Controller extends Package
 {
@@ -87,6 +88,11 @@ class Controller extends Package
             $pk->setPermissionObject($page);
             $pt = $pk->getPermissionAssignmentObject();
             $pa = $pk->getPermissionAccessObject();
+            if (!$pa) {
+                $pa = PermissionAccess::create($pk);
+            } elseif ($pa->isPermissionAccessInUse()) {
+                $pa = $pa->duplicate();
+            }
             foreach ($pa->getAccessListItems() as $accessListItem) {
                 $accessEntity = $accessListItem->getAccessEntityObject();
                 if ($accessEntity->getAccessEntityTypeHandle() === 'group') {
@@ -94,7 +100,7 @@ class Controller extends Package
                     $group = $accessEntity->getGroupObject();
                     if ($group) {
                         $groupID = $group->getGroupID();
-                        if (!in_array($groupID, $groupIDs)) {
+                        if ($groupID !== ADMIN_GROUP_ID && !in_array($groupID, $groupIDs)) {
                             core_log(sprintf('Remove access: Page %s, Group %s', $page->getCollectionPath(), $group->getGroupDisplayName(false)));
                             $pa->removeListItem($accessEntity);
                         }

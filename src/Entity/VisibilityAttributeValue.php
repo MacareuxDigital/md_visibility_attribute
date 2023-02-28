@@ -3,6 +3,7 @@
 namespace Macareux\VisibilityAttribute\Entity;
 
 use Concrete\Core\Entity\Attribute\Value\Value\AbstractValue;
+use Concrete\Core\User\Group\Group;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,5 +31,16 @@ class VisibilityAttributeValue extends AbstractValue
     public function setVisibleGroups(array $visibleGroups): void
     {
         $this->visibleGroups = $visibleGroups;
+    }
+
+    public function __toString()
+    {
+        $groupNames = [];
+        foreach ($this->getVisibleGroups() as $groupID) {
+            $group = Group::getByID($groupID);
+            $groupNames[] = $group->getGroupDisplayName(false, false);
+        }
+
+        return implode(', ', $groupNames);
     }
 }

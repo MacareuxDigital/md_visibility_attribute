@@ -22,7 +22,7 @@ $akID = $akID ?? null;
                 plugins: ['remove_button'],
                 valueField: 'id',
                 labelField: 'label',
-                searchField: 'text',
+                searchField: 'label',
                 options: <?=json_encode($optionGroups)?>,
                 items: <?=json_encode($visibleGroups)?>,
                 openOnFocus: false,
