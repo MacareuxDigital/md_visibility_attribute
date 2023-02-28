@@ -38,7 +38,9 @@ class VisibilityAttributeValue extends AbstractValue
         $groupNames = [];
         foreach ($this->getVisibleGroups() as $groupID) {
             $group = Group::getByID($groupID);
-            $groupNames[] = $group->getGroupDisplayName(false, false);
+            if ($group) {
+                $groupNames[] = $group->getGroupDisplayName(false, false);
+            }
         }
 
         return implode(', ', $groupNames);
