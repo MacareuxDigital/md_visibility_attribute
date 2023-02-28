@@ -105,6 +105,7 @@ class Controller extends Package
                         if ($groupID !== ADMIN_GROUP_ID && !in_array($groupID, $groupIDs)) {
                             core_log(sprintf('Remove access: Page %s, Group %s', $page->getCollectionPath(), $group->getGroupDisplayName(false)));
                             $pa->removeListItem($accessEntity);
+                            $pt->assignPermissionAccess($pa);
                         }
                     }
                 }
