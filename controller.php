@@ -71,6 +71,8 @@ class Controller extends Package
                     if ($visibility) {
                         $visibleGroups = $visibility->getVisibleGroups();
                         self::setVisibleGroups($c, $visibleGroups);
+                    } else {
+                        self::setVisibleGroups($c, []);
                     }
                     break;
                 }

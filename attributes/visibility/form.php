@@ -25,7 +25,7 @@ $akID = $akID ?? null;
                 searchField: 'label',
                 options: <?=json_encode($optionGroups)?>,
                 items: <?=json_encode($visibleGroups)?>,
-                openOnFocus: false,
+                openOnFocus: true,
                 create: false,
                 createFilter: function (input) {
                     return input.length >= 1;
