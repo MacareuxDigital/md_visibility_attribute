@@ -71,8 +71,6 @@ class Controller extends Package
                     if ($visibility) {
                         $visibleGroups = $visibility->getVisibleGroups();
                         self::setVisibleGroups($c, $visibleGroups);
-                    } else {
-                        self::setVisibleGroups($c, []);
                     }
                     break;
                 }
@@ -102,10 +100,9 @@ class Controller extends Package
                     $group = $accessEntity->getGroupObject();
                     if ($group) {
                         $groupID = $group->getGroupID();
-                        if ($groupID !== ADMIN_GROUP_ID && !in_array($groupID, $groupIDs)) {
+                        if ($groupID !== ADMIN_GROUP_ID && (!in_array($groupID, $groupIDs) || empty($groupIDs))) {
                             core_log(sprintf('Remove access: Page %s, Group %s', $page->getCollectionPath(), $group->getGroupDisplayName(false)));
                             $pa->removeListItem($accessEntity);
-                            $pt->assignPermissionAccess($pa);
                         }
                     }
                 }
@@ -116,9 +113,10 @@ class Controller extends Package
                     $pe = GroupEntity::getOrCreate($group);
                     core_log(sprintf('Add access: Page %s, Group %s', $page->getCollectionPath(), $group->getGroupDisplayName(false)));
                     $pa->addListItem($pe);
-                    $pt->assignPermissionAccess($pa);
                 }
             }
+            $pa->markAsInUse();
+            $pt->assignPermissionAccess($pa);
         }
     }
 }
