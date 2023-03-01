@@ -4,6 +4,7 @@ namespace Concrete\Package\MdVisibilityAttribute;
 
 use Concrete\Core\Attribute\Category\CategoryService;
 use Concrete\Core\Attribute\TypeFactory;
+use Concrete\Core\Cache\Level\RequestCache;
 use Concrete\Core\Entity\Attribute\Category;
 use Concrete\Core\Package\Package;
 use Concrete\Core\Page\Page;
@@ -54,9 +55,12 @@ class Controller extends Package
 
     public function on_start()
     {
+        /** @var RequestCache $requestCache */
+        $requestCache = $this->app->make('cache/request');
         /** @var EventDispatcherInterface $director */
         $director = $this->app->make('director');
-        $director->addListener('on_page_type_publish', function ($event) {
+        $director->addListener('on_page_type_publish', function ($event) use ($requestCache) {
+            $requestCache->disable();
             /** @var Event $event */
             $c = $event->getPageObject();
             /** @var CategoryService $service */
