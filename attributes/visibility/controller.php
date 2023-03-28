@@ -106,6 +106,15 @@ class Controller extends \Concrete\Core\Attribute\Controller
         return $this->createAttributeValue(explode(',', $data['visibleGroups']));
     }
 
+    public function validateForm($data)
+    {
+        if (empty($data['visibleGroups'])) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function validateValue()
     {
         return $this->attributeValue->getValue() !== '';
