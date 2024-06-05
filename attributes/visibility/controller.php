@@ -147,8 +147,8 @@ class Controller extends \Concrete\Core\Attribute\Controller
          */
         $type = $this->getAttributeKeySettings();
         $data += [
-            'optionGroups' => $data['optionGroups'],
-            'allowMultiple' => $data['allowMultiple']
+            'optionGroups' => $data['optionGroups'] ?? [],
+            'allowMultiple' => $data['allowMultiple'] ?? false
         ];
         $optionGroups = (array)$data['optionGroups'];
         $allowMultiple = (bool)$data['allowMultiple'];
