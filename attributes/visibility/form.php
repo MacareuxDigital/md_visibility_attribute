@@ -17,7 +17,7 @@ $isV9 = version_compare(app('config')->get('concrete.version'), '9.0.0', '>=');
             <div class="form-check">
                 <?=$form->checkbox($view->field('visibleGroups') . '[]', $option['id'], in_array($option['id'], $visibleGroups)); ?>
                 <label class="form-check-label" for="<?= $view->field('atSelectOptionValue') . '_' . $option['id']; ?>">
-                    <?=$option['label']?>
+                    <?= htmlspecialchars($option['label'], ENT_QUOTES, APP_CHARSET); ?>
                 </label>
             </div>
         <?php
