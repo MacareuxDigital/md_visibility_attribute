@@ -11,27 +11,29 @@ $akID = $akID ?? null;
 $isV9 = version_compare(app('config')->get('concrete.version'), '9.0.0', '>=');
 ?>
 <div class="form-group">
-<?php if ($isV9 && $allowMultiple) {
-    foreach ($optionGroups as $option) {
-        /** @var \Concrete\Core\User\Group\Group $option */ ?>
-            <div class="form-check">
-                <?=$form->checkbox($view->field('visibleGroups') . '[]', $option['id'], in_array($option['id'], $visibleGroups)); ?>
-                <label class="form-check-label" for="<?= $view->field('atSelectOptionValue') . '_' . $option['id']; ?>">
-                    <?= htmlspecialchars($option['label'], ENT_QUOTES, APP_CHARSET); ?>
-                </label>
-            </div>
-        <?php
-    }
-} ?>
+<?php if ($isV9) { ?>
+    <select id="visible-select2-<?=$akID?>" name="<?=$view->field('visibleGroups')?>[]" class="form-control" <?= $allowMultiple ? 'multiple' : ''; ?> style="display:none;">
+        <?php foreach ($optionGroups as $group): ?>
+            <option value="<?= $group['id'] ?>" <?= in_array($group['id'], $visibleGroups) ? 'selected' : ''; ?>><?= $group['label'] ?></option>
+        <?php endforeach; ?>
+    </select>
+    <script>
+        $(document).ready(function () {
+            var selectElement = $('#visible-select2-<?=$akID?>');
 
-    <?php if ($isV9 && !$allowMultiple) {
-    $options = ['' => t('** None')];
-    foreach ($optionGroups as $opt) {
-        /** @var \Concrete\Core\User\Group\Group $opt */
-        $options[$opt['id']] = $opt['label'];
-    }
-    echo $form->select($view->field('visibleGroups'), $options, empty($visibleGroups) ? '' : $visibleGroups[0]);
-}?>
+            selectElement.select2({
+                data: <?=json_encode($optionGroups)?>.map(function(item) {
+                    return { id: item.id, text: item.label };
+                }),
+                tags: true,
+                tokenSeparators: [','],
+                createTag: function (params) {
+                    return params.term.length >= 1 ? { id: params.term, text: params.term } : null;
+                }
+            });
+        });
+    </script>
+<?php }?>
 <?php if (!$isV9) {
     echo $form->hidden(
         $view->field('visibleGroups'),

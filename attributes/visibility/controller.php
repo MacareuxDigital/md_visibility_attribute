@@ -179,4 +179,14 @@ class Controller extends \Concrete\Core\Attribute\Controller
         $this->set('optionGroups', $optionGroups);
         $this->set('allowMultiple', $allowMultiple);
     }
+
+    public function on_start()
+    {
+        parent::on_start();
+        $this->requireAsset('javascript', 'jquery');
+        $this->requireAsset('css', 'select2-css');
+        $this->requireAsset('javascript', 'select2-js');
+    }
+
+
 }

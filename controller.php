@@ -2,6 +2,7 @@
 
 namespace Concrete\Package\MdVisibilityAttribute;
 
+use Concrete\Core\Asset\AssetList;
 use Concrete\Core\Attribute\Category\CategoryService;
 use Concrete\Core\Attribute\TypeFactory;
 use Concrete\Core\Cache\Level\RequestCache;
@@ -80,6 +81,8 @@ class Controller extends Package
                 }
             }
         });
+
+        $this->initAssets();
     }
 
     protected static function setVisibleGroups(Page $page, array $groupIDs): void
@@ -122,5 +125,13 @@ class Controller extends Package
             $pa->markAsInUse();
             $pt->assignPermissionAccess($pa);
         }
+    }
+
+    protected function initAssets()
+    {
+        $assetList = AssetList::getInstance();
+
+        $assetList->register('css', 'select2-css', 'css/select2.min.css', [], $this);
+        $assetList->register('javascript', 'select2-js', 'js/select2.min.js', [], $this);
     }
 }
