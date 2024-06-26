@@ -11,28 +11,29 @@ $akID = $akID ?? null;
 $isV9 = version_compare(app('config')->get('concrete.version'), '9.0.0', '>=');
 ?>
 <div class="form-group">
-<?php if ($isV9) { ?>
-    <select id="visible-select2-<?=$akID?>" name="<?=$view->field('visibleGroups')?>[]" class="form-control" <?= $allowMultiple ? 'multiple' : ''; ?> style="display:none;">
-        <?php foreach ($optionGroups as $group): ?>
-            <option value="<?= $group['id'] ?>" <?= in_array($group['id'], $visibleGroups) ? 'selected' : ''; ?>><?= $group['label'] ?></option>
-        <?php endforeach; ?>
-    </select>
-    <script>
-        $(document).ready(function () {
-            var selectElement = $('#visible-select2-<?=$akID?>');
+<?php if ($isV9) {
+    $options = array_map(function ($group) {
+        return [
+            'id' => $group['id'],
+            'label' => $group['label']
+        ];
+    }, $optionGroups);
+    $options = array_column($options, 'label', 'id');
+    ?>
+    <div data-row="specific-calendar">
+        <div class="form-group" data-vue="cms">
+            <concrete-select
+                <?php if (isset($allowMultiple) && $allowMultiple) { ?>:multiple="true"
+                name="visibleGroups[]" <?php } else { ?> name="visibleGroups" <?php } ?>
+                :options='<?= json_encode($options) ?>'
+                <?php if (isset($visibleGroups)) { ?>
+                    <?php if (isset($allowMultiple) && $allowMultiple) { ?>:value='<?= json_encode(($visibleGroups)) ?>' <?php } else { ?>value='<?= $visibleGroups[0] ?>'<?php } ?>
+                <?php } ?>
+            >
+            </concrete-select>
+        </div>
+    </div>
 
-            selectElement.select2({
-                data: <?=json_encode($optionGroups)?>.map(function(item) {
-                    return { id: item.id, text: item.label };
-                }),
-                tags: true,
-                tokenSeparators: [','],
-                createTag: function (params) {
-                    return params.term.length >= 1 ? { id: params.term, text: params.term } : null;
-                }
-            });
-        });
-    </script>
 <?php }?>
 <?php if (!$isV9) {
     echo $form->hidden(
