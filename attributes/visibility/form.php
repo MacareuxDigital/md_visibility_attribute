@@ -11,27 +11,30 @@ $akID = $akID ?? null;
 $isV9 = version_compare(app('config')->get('concrete.version'), '9.0.0', '>=');
 ?>
 <div class="form-group">
-<?php if ($isV9 && $allowMultiple) {
-    foreach ($optionGroups as $option) {
-        /** @var \Concrete\Core\User\Group\Group $option */ ?>
-            <div class="form-check">
-                <?=$form->checkbox($view->field('visibleGroups') . '[]', $option['id'], in_array($option['id'], $visibleGroups)); ?>
-                <label class="form-check-label" for="<?= $view->field('atSelectOptionValue') . '_' . $option['id']; ?>">
-                    <?= htmlspecialchars($option['label'], ENT_QUOTES, APP_CHARSET); ?>
-                </label>
-            </div>
-        <?php
-    }
-} ?>
+<?php if ($isV9) {
+    $options = array_map(function ($group) {
+        return [
+            'id' => $group['id'],
+            'label' => $group['label']
+        ];
+    }, $optionGroups);
+    $options = array_column($options, 'label', 'id');
+    ?>
+    <div data-row="specific-visible">
+        <div class="form-group" data-vue="cms">
+            <concrete-select
+                <?php if (isset($allowMultiple) && $allowMultiple) { ?>:multiple="true"
+                name="visibleGroups[]" <?php } else { ?> name="visibleGroups" <?php } ?>
+                :options='<?= json_encode($options) ?>'
+                <?php if (isset($visibleGroups)) { ?>
+                    <?php if (isset($allowMultiple) && $allowMultiple) { ?>:value='<?= json_encode(($visibleGroups)) ?>' <?php } else { ?>value='<?= $visibleGroups[0] ?>'<?php } ?>
+                <?php } ?>
+            >
+            </concrete-select>
+        </div>
+    </div>
 
-    <?php if ($isV9 && !$allowMultiple) {
-    $options = ['' => t('** None')];
-    foreach ($optionGroups as $opt) {
-        /** @var \Concrete\Core\User\Group\Group $opt */
-        $options[$opt['id']] = $opt['label'];
-    }
-    echo $form->select($view->field('visibleGroups'), $options, empty($visibleGroups) ? '' : $visibleGroups[0]);
-}?>
+<?php }?>
 <?php if (!$isV9) {
     echo $form->hidden(
         $view->field('visibleGroups'),
