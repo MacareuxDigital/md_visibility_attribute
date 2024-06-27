@@ -20,7 +20,7 @@ $isV9 = version_compare(app('config')->get('concrete.version'), '9.0.0', '>=');
     }, $optionGroups);
     $options = array_column($options, 'label', 'id');
     ?>
-    <div data-row="specific-calendar">
+    <div data-row="specific-visible">
         <div class="form-group" data-vue="cms">
             <concrete-select
                 <?php if (isset($allowMultiple) && $allowMultiple) { ?>:multiple="true"

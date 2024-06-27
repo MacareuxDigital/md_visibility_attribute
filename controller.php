@@ -2,7 +2,6 @@
 
 namespace Concrete\Package\MdVisibilityAttribute;
 
-use Concrete\Core\Asset\AssetList;
 use Concrete\Core\Attribute\Category\CategoryService;
 use Concrete\Core\Attribute\TypeFactory;
 use Concrete\Core\Cache\Level\RequestCache;
