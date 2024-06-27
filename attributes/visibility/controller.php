@@ -103,7 +103,10 @@ class Controller extends \Concrete\Core\Attribute\Controller
     public function createAttributeValueFromRequest()
     {
         $data = $this->post();
-        return $this->createAttributeValue(explode(',', $data['visibleGroups']));
+        if (!is_array($data['visibleGroups'])) {
+            $data['visibleGroups'] = explode(',', $data['visibleGroups']);
+        }
+        return $this->createAttributeValue($data['visibleGroups']);
     }
 
     public function validateForm($data)
@@ -147,8 +150,8 @@ class Controller extends \Concrete\Core\Attribute\Controller
          */
         $type = $this->getAttributeKeySettings();
         $data += [
-            'optionGroups' => $data['optionGroups'],
-            'allowMultiple' => $data['allowMultiple']
+            'optionGroups' => $data['optionGroups'] ?? [],
+            'allowMultiple' => $data['allowMultiple'] ?? false
         ];
         $optionGroups = (array)$data['optionGroups'];
         $allowMultiple = (bool)$data['allowMultiple'];
