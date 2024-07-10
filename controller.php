@@ -20,7 +20,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'md_visibility_attribute';
     protected $appVersionRequired = '8.5.5';
-    protected $pkgVersion = '0.1.1';
+    protected $pkgVersion = '0.1.2';
     protected $pkgAutoloaderRegistries = [
         'src/Entity' => '\Macareux\VisibilityAttribute\Entity',
     ];

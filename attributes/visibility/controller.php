@@ -103,15 +103,15 @@ class Controller extends \Concrete\Core\Attribute\Controller
     public function createAttributeValueFromRequest()
     {
         $data = $this->post();
-        if (!is_array($data['visibleGroups'])) {
-            $data['visibleGroups'] = explode(',', $data['visibleGroups']);
+        if (!is_array($data)) {
+            $data = explode(',', $data);
         }
-        return $this->createAttributeValue($data['visibleGroups']);
+        return $this->createAttributeValue($data);
     }
 
     public function validateForm($data)
     {
-        if (empty($data['visibleGroups'])) {
+        if (empty($data)) {
             return false;
         }
 

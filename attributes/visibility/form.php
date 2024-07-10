@@ -24,7 +24,7 @@ $isV9 = version_compare(app('config')->get('concrete.version'), '9.0.0', '>=');
         <div class="form-group" data-vue="cms">
             <concrete-select
                 <?php if (isset($allowMultiple) && $allowMultiple) { ?>:multiple="true"
-                name="visibleGroups[]" <?php } else { ?> name="visibleGroups" <?php } ?>
+                name="akID[<?= $akID ?>][]" <?php } else { ?> name="visibleGroups" <?php } ?>
                 :options='<?= json_encode($options) ?>'
                 <?php if (isset($visibleGroups)) { ?>
                     <?php if (isset($allowMultiple) && $allowMultiple) { ?>:value='<?= json_encode(($visibleGroups)) ?>' <?php } else { ?>value='<?= $visibleGroups[0] ?>'<?php } ?>
