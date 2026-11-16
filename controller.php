@@ -7,9 +7,10 @@ use Concrete\Core\Attribute\TypeFactory;
 use Concrete\Core\Cache\Level\RequestCache;
 use Concrete\Core\Entity\Attribute\Category;
 use Concrete\Core\Package\Package;
+use Concrete\Core\Page\Collection\Version\Event;
 use Concrete\Core\Page\Page;
-use Concrete\Core\Page\Type\Event;
 use Concrete\Core\Permission\Access\Entity\GroupEntity;
+use Concrete\Core\Permission\Checker;
 use Concrete\Core\Permission\Key\PageKey as PagePermissionKey;
 use Concrete\Core\User\Group\Group;
 use Macareux\VisibilityAttribute\Entity\VisibilityAttributeValue;
@@ -20,7 +21,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'md_visibility_attribute';
     protected $appVersionRequired = '8.5.5';
-    protected $pkgVersion = '0.1.1';
+    protected $pkgVersion = '0.1.2';
     protected $pkgAutoloaderRegistries = [
         'src/Entity' => '\Macareux\VisibilityAttribute\Entity',
     ];
@@ -59,10 +60,13 @@ class Controller extends Package
         $requestCache = $this->app->make('cache/request');
         /** @var EventDispatcherInterface $director */
         $director = $this->app->make('director');
-        $director->addListener('on_page_type_publish', function ($event) use ($requestCache) {
-            $requestCache->disable();
+        $director->addListener('on_page_version_approve', function ($event) use ($requestCache) {
             /** @var Event $event */
             $c = $event->getPageObject();
+            if (!$c instanceof Page || $c->isError() || !(new Checker($c))->canEditPagePermissions()) {
+                return;
+            }
+            $requestCache->disable();
             /** @var CategoryService $service */
             $service = $this->app->make(CategoryService::class);
             /** @var Category $category */
